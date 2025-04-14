@@ -23,10 +23,11 @@ CREATE TABLE IF NOT EXISTS school.subjects
 CREATE TABLE IF NOT EXISTS school.staff
 (
     staff_id SERIAL,
-    surname VARCHAR(50) NOT NULL,
     firstname VARCHAR(50) NOT NULL,
+    surname VARCHAR(50) NOT NULL,
     lastname VARCHAR(50),
     date_of_birth DATE NOT NULL,
+	subject_id INTEGER NOT NULL,
     email VARCHAR(100) NOT NULL,
     post VARCHAR(50) NOT NULL,
 
@@ -36,6 +37,8 @@ CREATE TABLE IF NOT EXISTS school.staff
         firstname ~ '^[а-яА-Яa-zA-Z-]+$' AND 
         (lastname IS NULL OR lastname ~ '^[а-яА-Яa-zA-Z-]+$')
     ),
+	CONSTRAINT staff_subject_id_fkey FOREIGN KEY (subject_id)
+        REFERENCES school.subjects (subject_id),
     CONSTRAINT staff_email_isvalid CHECK (email ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
     CONSTRAINT staff_post_not_empty CHECK (post != ''),
     CONSTRAINT staff_email_unique UNIQUE (email),
@@ -130,7 +133,6 @@ CREATE TABLE IF NOT EXISTS school.timetable
     group_id INTEGER NOT NULL,
     staff_id INTEGER NOT NULL,
     lesson_date TIMESTAMP NOT NULL,
-    duration_minutes INTEGER NOT NULL,
     theme VARCHAR(100) NOT NULL,
 
     CONSTRAINT timetable_pkey PRIMARY KEY (timetable_id),
